@@ -1,6 +1,6 @@
 // ── Leaderboard via GitHub Gist ──
 const GIST_ID = "03af45eb5cfbc2e4b9155d7bbeef31f0";
-const GIST_TOKEN = atob("Z2l0aHViX3BhdF8xMUFKRUZKS0kwRlhKQnVaWmd0ZTB5X2VGOTN6RGNNT1RJNTRNRzJFbDVuNk4xSmZhWHlmc0syRFZSTHZFN1VvbmlJTDRUV003UTA0NDZZMHhO");
+const GIST_TOKEN = atob("Z2l0aHViX3BhdF8xMUFKRUZKS0kwUUFCQVpPTmVDSmVhXzIzUGZybHE3d2VGYzFQUjFuTHVHeDM1NDRHcmJNeXY3ZkQyRDlKRnM0VzNXNVRVMzNBNTdZOWtnZmNM");
 const GIST_URL = `https://api.github.com/gists/${GIST_ID}`;
 const MAX_ENTRIES = 200;
 
@@ -8,9 +8,7 @@ let cachedEntries = [];
 
 async function fetchLeaderboard() {
     try {
-        const res = await fetch(GIST_URL, {
-            headers: { "Authorization": `token ${GIST_TOKEN}` }
-        });
+        const res = await fetch(GIST_URL);
         if (!res.ok) {
             console.error("Leaderboard fetch failed:", res.status);
             return [];
