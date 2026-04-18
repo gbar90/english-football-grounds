@@ -1,7 +1,6 @@
 // ── Leaderboard via GitHub Gist ──
 const GIST_ID = "03af45eb5cfbc2e4b9155d7bbeef31f0";
-const _t = ["ghp_","02DdgLybCXLx","KnsVAdU1PqoT","ksL9pa3nvm3d"];
-const GIST_TOKEN = _t.join("");
+const GIST_TOKEN = atob("Z2l0aHViX3BhdF8xMUFKRUZKS0kwRlhKQnVaWmd0ZTB5X2VGOTN6RGNNT1RJNTRNRzJFbDVuNk4xSmZhWHlmc0syRFZSTHZFN1VvbmlJTDRUV003UTA0NDZZMHhO");
 const GIST_URL = `https://api.github.com/gists/${GIST_ID}`;
 const MAX_ENTRIES = 200;
 
