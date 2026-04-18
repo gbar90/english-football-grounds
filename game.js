@@ -333,8 +333,8 @@ function showFinalScreen() {
 
 // ── Scoring ──
 function calcPoints(distKm) {
-    // 0 km = 5000 pts, tight decay (10km constant)
-    if (distKm <= 0.5) return MAX_POINTS_PER_ROUND;
+    // Exactly 0 km = 5000 pts, otherwise exponential decay (10km constant)
+    if (distKm === 0) return MAX_POINTS_PER_ROUND;
     const pts = Math.round(MAX_POINTS_PER_ROUND * Math.exp(-distKm / 10));
     return Math.max(0, pts);
 }
