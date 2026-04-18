@@ -132,7 +132,7 @@ function loadRound() {
 
     // Show intro overlay
     document.getElementById("intro-round").textContent = `Round ${currentRound + 1} of ${TOTAL_ROUNDS}`;
-    document.getElementById("intro-stadium-name").textContent = stadium.name;
+    document.getElementById("intro-stadium-name").textContent = selectedDifficulty === "hard" ? "Where is this stadium?" : stadium.name;
     document.getElementById("intro-club-name").textContent = selectedDifficulty === "easy" ? stadium.club : "";
 
     const introImg = document.getElementById("intro-image");
@@ -169,7 +169,7 @@ function loadRound() {
 // ── Intro "Let's Go" ──
 introGoBtn.addEventListener("click", () => {
     const stadium = roundStadiums[currentRound];
-    clueStadium.textContent = stadium.name;
+    clueStadium.textContent = selectedDifficulty === "hard" ? "???" : stadium.name;
     clueClub.textContent = selectedDifficulty === "easy" ? stadium.club : "";
     introOverlay.classList.add("hidden");
 });
