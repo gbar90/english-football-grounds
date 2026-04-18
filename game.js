@@ -104,13 +104,19 @@ function initMap() {
         center: [53.0, -1.5],
         zoom: 6,
         minZoom: 5,
-        maxZoom: 15
+        maxZoom: 15,
+        preferCanvas: true,
+        fadeAnimation: false,
+        zoomAnimation: true,
+        markerZoomAnimation: false
     });
 
     L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
         subdomains: "abcd",
-        maxZoom: 15
+        maxZoom: 15,
+        updateWhenIdle: true,
+        keepBuffer: 2
     }).addTo(map);
 
     map.on("click", onMapClick);
@@ -327,9 +333,9 @@ function showFinalScreen() {
 
 // ── Scoring ──
 function calcPoints(distKm) {
-    // 0 km = 5000 pts, 500+ km = 0 pts (exponential decay)
+    // 0 km = 5000 pts, tight decay (10km constant)
     if (distKm <= 0.5) return MAX_POINTS_PER_ROUND;
-    const pts = Math.round(MAX_POINTS_PER_ROUND * Math.exp(-distKm / 80));
+    const pts = Math.round(MAX_POINTS_PER_ROUND * Math.exp(-distKm / 10));
     return Math.max(0, pts);
 }
 
