@@ -70,7 +70,7 @@ async function submitScore(name, score, rounds, avgDist, league, difficulty) {
         difficulty,
         date: getToday()
     });
-    entries.sort((a, b) => b.score - a.score);
+    entries.sort((a, b) => b.score - a.score || b.date.localeCompare(a.date));
     const trimmed = entries.slice(0, MAX_ENTRIES);
     await saveLeaderboard(trimmed);
     cachedEntries = trimmed;
