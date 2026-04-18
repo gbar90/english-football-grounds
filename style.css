@@ -492,7 +492,7 @@ h1 {
     height: 100%;
     z-index: 1500;
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
     pointer-events: auto;
 }
 
@@ -500,11 +500,14 @@ h1 {
     display: none;
 }
 
+#drag-handle {
+    display: none;
+}
 
 .result-card {
     background: var(--bg-card);
     width: 100%;
-    height: 100%;
+    flex: 1;
     overflow-y: auto;
     border-left: 1px solid var(--border-subtle);
     box-shadow: -4px 0 30px rgba(0, 0, 0, 0.5);
@@ -991,18 +994,43 @@ h1 {
         font-size: 1rem;
     }
 
-    /* Result panel - scrollable on mobile */
+    /* Result panel - draggable on mobile */
     #result-panel {
         width: 100%;
-        height: 75%;
         top: auto;
         bottom: 0;
+        height: 75%;
         border-left: none;
+        transition: transform 0.3s ease;
+        flex-direction: column;
+    }
+
+    #result-panel.collapsed {
+        transform: translateY(calc(100% - 3rem));
+    }
+
+    #drag-handle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.6rem 0;
+        background: var(--bg-card);
         border-top: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        cursor: grab;
+        touch-action: none;
+    }
+
+    .drag-bar {
+        width: 40px;
+        height: 4px;
+        background: var(--text-muted);
+        border-radius: 2px;
     }
 
     .result-card {
         border-left: none;
+        border-top: none;
         padding-bottom: env(safe-area-inset-bottom, 1rem);
     }
 

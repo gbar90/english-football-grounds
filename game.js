@@ -340,3 +340,54 @@ function shuffle(arr) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
+
+// ── Drag handle for mobile result panel ──
+(function() {
+    const handle = document.getElementById("drag-handle");
+    const panel = document.getElementById("result-panel");
+    let startY = 0;
+    let collapsed = false;
+
+    handle.addEventListener("touchstart", (e) => {
+        startY = e.touches[0].clientY;
+        panel.style.transition = "none";
+    }, { passive: true });
+
+    handle.addEventListener("touchmove", (e) => {
+        const dy = e.touches[0].clientY - startY;
+        if (dy > 0) {
+            panel.style.transform = `translateY(${dy}px)`;
+        }
+    }, { passive: true });
+
+    handle.addEventListener("touchend", (e) => {
+        panel.style.transition = "transform 0.3s ease";
+        const dy = e.changedTouches[0].clientY - startY;
+        if (dy > 80) {
+            // Swipe down — collapse
+            panel.classList.add("collapsed");
+            panel.style.transform = "";
+            collapsed = true;
+        } else {
+            // Snap back
+            panel.style.transform = "";
+        }
+    });
+
+    // Tap handle to expand when collapsed
+    handle.addEventListener("click", () => {
+        if (collapsed) {
+            panel.classList.remove("collapsed");
+            collapsed = false;
+        }
+    });
+
+    // Reset collapsed state on new round
+    const origLoadRound = loadRound;
+    loadRound = function() {
+        panel.classList.remove("collapsed");
+        panel.style.transform = "";
+        collapsed = false;
+        origLoadRound();
+    };
+})();
