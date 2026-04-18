@@ -343,39 +343,47 @@ function shuffle(arr) {
 
 // ── Drag handle for mobile result panel ──
 (function() {
-    const handle = document.getElementById("drag-handle");
     const panel = document.getElementById("result-panel");
     let startY = 0;
+    let dragging = false;
     let collapsed = false;
 
-    handle.addEventListener("touchstart", (e) => {
-        startY = e.touches[0].clientY;
-        panel.style.transition = "none";
-    }, { passive: true });
+    // Listen on the entire panel top area for swipe
+    panel.addEventListener("touchstart", (e) => {
+        // Only start drag from top 60px of panel or the drag handle
+        const rect = panel.getBoundingClientRect();
+        const touchY = e.touches[0].clientY;
+        if (touchY - rect.top < 60 || e.target.closest("#drag-handle")) {
+            startY = touchY;
+            dragging = true;
+            panel.style.transition = "none";
+        }
+    });
 
-    handle.addEventListener("touchmove", (e) => {
+    panel.addEventListener("touchmove", (e) => {
+        if (!dragging) return;
         const dy = e.touches[0].clientY - startY;
         if (dy > 0) {
             panel.style.transform = `translateY(${dy}px)`;
         }
-    }, { passive: true });
+    });
 
-    handle.addEventListener("touchend", (e) => {
+    panel.addEventListener("touchend", (e) => {
+        if (!dragging) return;
+        dragging = false;
         panel.style.transition = "transform 0.3s ease";
         const dy = e.changedTouches[0].clientY - startY;
-        if (dy > 80) {
-            // Swipe down — collapse
+        if (dy > 60) {
             panel.classList.add("collapsed");
             panel.style.transform = "";
             collapsed = true;
         } else {
-            // Snap back
             panel.style.transform = "";
         }
     });
 
-    // Tap handle to expand when collapsed
-    handle.addEventListener("click", () => {
+    // Tap to expand when collapsed
+    panel.addEventListener("click", () => {
         if (collapsed) {
             panel.classList.remove("collapsed");
             collapsed = false;
