@@ -305,6 +305,15 @@ function showFinalScreen() {
     document.getElementById("leaderboard-section").classList.add("hidden");
 
     finalOverlay.classList.remove("hidden");
+
+    // Show leaderboard if cached data available
+    if (window.cachedEntries && window.cachedEntries.length > 0) {
+        const section = document.getElementById("leaderboard-section");
+        section.classList.remove("hidden");
+        section.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        section.querySelector('[data-tab="alltime"]').classList.add("active");
+        window.renderLeaderboard(window.cachedEntries, document.getElementById("leaderboard-list"), "alltime");
+    }
 }
 
 // ── Scoring ──

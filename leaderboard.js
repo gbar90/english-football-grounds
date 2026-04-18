@@ -1,22 +1,31 @@
-// ── Leaderboard via GitHub Gist ──
-const GIST_ID = "03af45eb5cfbc2e4b9155d7bbeef31f0";
-const GIST_TOKEN = atob("Z2l0aHViX3BhdF8xMUFKRUZKS0kwUUFCQVpPTmVDSmVhXzIzUGZybHE3d2VGYzFQUjFuTHVHeDM1NDRHcmJNeXY3ZkQyRDlKRnM0VzNXNVRVMzNBNTdZOWtnZmNM");
-const GIST_URL = `https://api.github.com/gists/${GIST_ID}`;
+// ── Leaderboard via Firebase Realtime Database ──
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCbcAWX_3K4biWojCp8VHhCQfVbkJw14Rg",
+    authDomain: "english-football-grounds.firebaseapp.com",
+    databaseURL: "https://english-football-grounds-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "english-football-grounds",
+    storageBucket: "english-football-grounds.firebasestorage.app",
+    messagingSenderId: "799983521585",
+    appId: "1:799983521585:web:05a1f2e8fd8a1026b72a10"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 const MAX_ENTRIES = 200;
 
 let cachedEntries = [];
 
 async function fetchLeaderboard() {
     try {
-        const res = await fetch(GIST_URL);
-        if (!res.ok) {
-            console.error("Leaderboard fetch failed:", res.status);
-            return [];
+        const snapshot = await get(ref(db, "leaderboard"));
+        if (snapshot.exists()) {
+            cachedEntries = snapshot.val() || [];
+        } else {
+            cachedEntries = [];
         }
-        const gist = await res.json();
-        const content = gist.files["leaderboard.json"].content;
-        const data = JSON.parse(content);
-        cachedEntries = data.leaderboard || [];
         return cachedEntries;
     } catch (err) {
         console.error("Leaderboard fetch error:", err);
@@ -26,22 +35,9 @@ async function fetchLeaderboard() {
 
 async function saveLeaderboard(entries) {
     try {
-        await fetch(GIST_URL, {
-            method: "PATCH",
-            headers: {
-                "Authorization": `token ${GIST_TOKEN}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                files: {
-                    "leaderboard.json": {
-                        content: JSON.stringify({ leaderboard: entries })
-                    }
-                }
-            })
-        });
-    } catch {
-        // silent fail
+        await set(ref(db, "leaderboard"), entries);
+    } catch (err) {
+        console.error("Leaderboard save error:", err);
     }
 }
 
@@ -180,7 +176,6 @@ document.getElementById("view-leaderboard-btn").addEventListener("click", async 
     overlay.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     overlay.querySelector('[data-tab="alltime"]').classList.add("active");
 
-    // Wait for preload if still in-flight, then use cache
     await leaderboardReady;
     renderLeaderboard(cachedEntries, list, "alltime");
 });
@@ -198,3 +193,12 @@ document.getElementById("close-leaderboard-btn").addEventListener("click", () =>
 
 // Preload leaderboard on page load
 const leaderboardReady = fetchLeaderboard();
+
+// Expose functions globally for game.js
+window.cachedEntries = cachedEntries;
+window.renderLeaderboard = renderLeaderboard;
+window.leaderboardReady = leaderboardReady;
+// Keep cachedEntries reference in sync
+Object.defineProperty(window, 'cachedEntries', {
+    get: () => cachedEntries
+});
