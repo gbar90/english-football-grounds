@@ -266,6 +266,28 @@ h1 {
     pointer-events: none;
 }
 
+.back-btn {
+    background: rgba(15, 21, 25, 0.92);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-sm);
+    backdrop-filter: blur(16px);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.2s;
+    border-left: 4px solid var(--accent-green);
+    box-shadow: var(--shadow-card);
+}
+
+.back-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--accent-green);
+}
+
 #clue-box {
     display: flex;
     flex-direction: column;

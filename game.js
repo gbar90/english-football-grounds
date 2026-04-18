@@ -44,6 +44,11 @@ document.querySelectorAll(".btn-group").forEach(group => {
 
 // ── Start game ──
 startBtn.addEventListener("click", startGame);
+document.getElementById("back-btn").addEventListener("click", () => {
+    gameScreen.classList.remove("active");
+    menuScreen.classList.add("active");
+    if (map) { map.remove(); map = null; }
+});
 playAgainBtn.addEventListener("click", () => {
     finalOverlay.classList.add("hidden");
     gameScreen.classList.remove("active");
@@ -182,7 +187,8 @@ lockBtn.addEventListener("click", () => {
 
     const stadium = roundStadiums[currentRound];
     const actual = L.latLng(stadium.lat, stadium.lng);
-    const distMeters = guessLatLng.distanceTo(actual);
+    const rawDistMeters = guessLatLng.distanceTo(actual);
+    const distMeters = Math.max(0, rawDistMeters - 120);
     const distKm = distMeters / 1000;
     const points = calcPoints(distKm);
     totalScore += points;
